@@ -5,15 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.fitforge.R;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -23,7 +24,10 @@ public class HomeFragment extends Fragment {
     private TextView tvGreeting;
     private TextView tvCalories;
     private TextView tvRemaining;
-    private ProgressBar calorieProgress;
+    private TextView tvCaloriePercent;
+    private TextView tvWeeklyWorkouts;
+
+    private CircularProgressIndicator calorieProgress;
 
     private static final int DAILY_TARGET = 2700;
 
@@ -53,6 +57,14 @@ public class HomeFragment extends Fragment {
         tvCalories = view.findViewById(R.id.tv_calories);
         tvRemaining = view.findViewById(R.id.tv_remaining);
 
+        tvCaloriePercent = view.findViewById(
+                R.id.tv_calorie_percent
+        );
+
+        tvWeeklyWorkouts = view.findViewById(
+                R.id.tv_weekly_workouts
+        );
+
         calorieProgress = view.findViewById(
                 R.id.calorie_progress
         );
@@ -60,14 +72,18 @@ public class HomeFragment extends Fragment {
 
     private void updateDashboard() {
 
+        // Temporary values until backend integration
         int consumedCalories = 0;
+        int completedWorkouts = 0;
+
+        Calendar calendar = Calendar.getInstance();
 
         String date = new SimpleDateFormat(
                 "EEEE, dd MMMM",
                 Locale.getDefault()
         ).format(new Date());
 
-        int hour = new Date().getHours();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
         String greeting;
 
@@ -86,10 +102,11 @@ public class HomeFragment extends Fragment {
 
         int progress = Math.min(
                 100,
-                (consumedCalories * 100) / DAILY_TARGET
+                consumedCalories * 100 / DAILY_TARGET
         );
 
         tvDate.setText(date);
+
         tvGreeting.setText(greeting);
 
         tvCalories.setText(
@@ -100,6 +117,14 @@ public class HomeFragment extends Fragment {
                 remaining + " kcal remaining"
         );
 
+        tvCaloriePercent.setText(
+                progress + "%"
+        );
+
         calorieProgress.setProgress(progress);
+
+        tvWeeklyWorkouts.setText(
+                completedWorkouts + " Workouts completed"
+        );
     }
 }
