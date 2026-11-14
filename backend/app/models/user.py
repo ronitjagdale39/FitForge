@@ -6,6 +6,7 @@ from sqlalchemy import (
     DateTime
 )
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 from app.database.session import Base
 
@@ -33,4 +34,9 @@ class User(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False
+    )
+    refresh_tokens = relationship(
+        "RefreshToken",
+        back_populates="user",
+        cascade="all, delete-orphan"
     )
