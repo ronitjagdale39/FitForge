@@ -8,55 +8,41 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fitforge.R;
 
+import com.example.fitforge.data.remote.ApiClient;
+import com.example.fitforge.data.remote.AuthApi;
+import com.example.fitforge.data.remote.dto.RegisterRequest;
+import com.example.fitforge.data.remote.dto.RegisterResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class RegisterActivity extends AppCompatActivity {
 
     EditText etName, etEmail, etPassword;
-    EditText etConfirmPassword, etAge, etHeight, etWeight;
-
-    Spinner spGender;
+    EditText etConfirmPassword;
 
     Button btnRegister;
     TextView tvLogin;
+    
+    private AuthApi authApi; // <-- Retrofit API instance
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_register);
+        
+        // Initialize Retrofit API
+        authApi = ApiClient.getClient().create(AuthApi.class);
 
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
 
-        etAge = findViewById(R.id.etAge);
-        etHeight = findViewById(R.id.etHeight);
-        etWeight = findViewById(R.id.etWeight);
-
-        spGender = findViewById(R.id.spGender);
-
         btnRegister = findViewById(R.id.btnRegister);
         tvLogin = findViewById(R.id.tvLogin);
-
-        String[] genders = {
-                "Select Gender",
-                "Male",
-                "Female",
-                "Other",
-                "Prefer not to say"
-        };
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                genders
-        );
-
-        adapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item
-        );
-
-        spGender.setAdapter(adapter);
 
         btnRegister.setOnClickListener(v -> registerUser());
 
@@ -72,10 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         String confirmPassword = etConfirmPassword.getText().toString();
 
         if (name.isEmpty() || email.isEmpty() ||
-                password.isEmpty() || confirmPassword.isEmpty() ||
-                etAge.getText().toString().trim().isEmpty() ||
-                etHeight.getText().toString().trim().isEmpty() ||
-                etWeight.getText().toString().trim().isEmpty()) {
+                password.isEmpty() || confirmPassword.isEmpty()) {
 
             Toast.makeText(this,
                     "Please fill all fields",
@@ -98,16 +81,35 @@ public class RegisterActivity extends AppCompatActivity {
             etConfirmPassword.setError("Passwords do not match");
             return;
         }
+        
+        // --- Call Backend API ---
+        
+        btnRegister.setEnabled(false); // disable button while loading
+        btnRegister.setText("Registering...");
 
-        if (spGender.getSelectedItemPosition() == 0) {
-            Toast.makeText(this,
-                    "Please select gender",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
+        RegisterRequest request = new RegisterRequest(name, email, password);
 
-        Toast.makeText(this,
-                "Registration UI working!",
-                Toast.LENGTH_SHORT).show();
+        authApi.register(request).enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                btnRegister.setEnabled(true);
+                btnRegister.setText("REGISTER");
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                    // Successfully registered! Let's go to Login
+                    finish(); 
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Registration Failed: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                btnRegister.setEnabled(true);
+                btnRegister.setText("REGISTER");
+                Toast.makeText(RegisterActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

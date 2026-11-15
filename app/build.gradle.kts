@@ -45,6 +45,11 @@ dependencies {
 
 // Lifecycle - LiveData
     implementation("androidx.lifecycle:lifecycle-livedata:2.8.7")
+    
+    // Retrofit & Gson for Networking
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)

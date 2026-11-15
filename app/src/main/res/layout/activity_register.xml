@@ -87,58 +87,6 @@
             android:textColorHint="#888888"
             android:backgroundTint="#A62638"/>
 
-        <!-- Age -->
-
-        <EditText
-            android:id="@+id/etAge"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Age"
-            android:inputType="number"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:backgroundTint="#A62638"/>
-
-        <!-- Height -->
-
-        <EditText
-            android:id="@+id/etHeight"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Height (cm)"
-            android:inputType="numberDecimal"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:backgroundTint="#A62638"/>
-
-        <!-- Weight -->
-
-        <EditText
-            android:id="@+id/etWeight"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Weight (kg)"
-            android:inputType="numberDecimal"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:backgroundTint="#A62638"/>
-
-        <!-- Gender -->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gender"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:layout_marginTop="15dp"/>
-
-        <Spinner
-            android:id="@+id/spGender"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:backgroundTint="#A62638"/>
-
         <!-- Register Button -->
 
         <Button
