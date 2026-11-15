@@ -12,4 +12,7 @@ public interface AuthApi {
     @POST("auth/register")
     Call<RegisterResponse> register(@Body RegisterRequest request);
 
+    @POST("auth/login")
+    Call<RegisterResponse> login(@Body com.example.fitforge.data.remote.dto.LoginRequest request);
+
 }
