@@ -1,10 +1,14 @@
 from fastapi import FastAPI, APIRouter
 from app.routes.auth import router as auth_router
+from app.routes.exercises import router as exercises_router
 from app.database.session import engine, Base
-from app.models import user,register # ensure models are imported to register with Base
+from app.models import user,register,workout,exercise,workout_session,workout,workout_exercise,exercise_set # ensure models are imported to register with Base
+from app.routes.redis_ping import router_redis
 
 # Create tables if they don't exist
 Base.metadata.create_all(bind=engine)
+
+
 
 app = FastAPI(
     title="FitForge AI",
@@ -13,6 +17,8 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+app.include_router(exercises_router)
+app.include_router(router_redis)
 # API Version 1
 api_router = APIRouter(prefix="/api/v1")
 
