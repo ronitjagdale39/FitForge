@@ -12,9 +12,9 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=ExerciseResponse, status_code=status.HTTP_201_CREATED)
-def create_exercise(exercise_data: ExerciseCreate, db: Session = Depends(get_db)):
-    return CreateExercise(db=db, Exercise_data=exercise_data)
+async def create_exercise(exercise_data: ExerciseCreate, db: Session = Depends(get_db)):
+    return await CreateExercise(db=db, Exercise_data=exercise_data)
 
 @router.get("/", response_model=List[ExerciseResponse])
-def get_exercises(skip: int = 0, limit: int = 20, db: Session = Depends(get_db)):
-    return get_all_exercises(db=db, skip=skip, limit=limit)
+async def get_exercises(skip: int = 0, limit: int = 20, db: Session = Depends(get_db)):
+    return await get_all_exercises(db=db, skip=skip, limit=limit)
