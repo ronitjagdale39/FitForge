@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from app.services.cache_service import delete_cache
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from app.models.exercise import Exercise
@@ -72,3 +73,60 @@ async def get_all_exercises(
     )
 
     return result
+async def get_exercise_id(db:Session,exercise_id:int):
+    cache_key=f"exercise:{exercise_id}"
+    cache_data=await get_cache(cache_key)
+    if cache_data is not None:
+        return cache_data
+    exercise_data=db.query(Exercise).filter(Exercise.id==exercise_id,Exercise.is_active==True).first()
+    if not exercise_data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Exercise not found"
+            )
+    result=ExerciseResponse.model_validate(exercise_data).model_dump(mode="json")
+    await set_cache(
+        cache_key,
+        result,
+        expire=300
+
+    )
+    return result
+async def update_data_service(exercise_data:ExerciseUpdate,db:Session,exercise_id:int):
+    exercise=db.query(Exercise).filter(Exercise.id==exercise_id,Exercise.is_active==True).first()
+    if not exercise:
+
+            raise HTTPException(
+
+                status_code=status.HTTP_404_NOT_FOUND,
+
+                detail="Exercise not found"
+
+            )
+    update_data_model=exercise_data.model_dump(exclude_unset=True)
+    for key,value in update_data_model.items():
+        setattr(exercise,key,value)
+    try:
+        db.commit()
+        db.refresh(exercise)
+    except IntegrityError:
+
+            db.rollback()
+            raise HTTPException(
+
+                status_code=status.HTTP_409_CONFLICT,
+
+                detail="Exercise violates a database constraint"
+
+            )
+
+    except:
+        db.rollback()
+        raise
+    try:
+        await delete_cache_data(f"exercises:all:*")
+        await delete_cache(f"exercise:{exercise_id}")
+    except Exception:
+        pass
+
+    return exercise
