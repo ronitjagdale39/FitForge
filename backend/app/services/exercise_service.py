@@ -24,14 +24,15 @@ async def CreateExercise(db: Session, Exercise_data: ExerciseCreate):
         )
 
     new_exercise = Exercise_data.model_dump()
-    new_exercise["name"] = new_exercise["name"].strip()
+    if new_exercise.get("name"):
+        new_exercise["name"] = new_exercise["name"].strip().lower()
 
     for key in ["primary_muscle", "equipment", "exercise_type"]:
         if new_exercise.get(key):
-            new_exercise[key] = new_exercise[key].lower()
+            new_exercise[key] = new_exercise[key].strip().lower()
 
     if new_exercise.get("secondary_muscles"):
-        new_exercise["secondary_muscles"] = [muscle.lower() for muscle in new_exercise["secondary_muscles"]]
+        new_exercise["secondary_muscles"] = [muscle.strip().lower() for muscle in new_exercise["secondary_muscles"]]
 
     new_exercise_data = Exercise(**new_exercise)
 
@@ -105,6 +106,10 @@ async def update_data_service(exercise_data:ExerciseUpdate,db:Session,exercise_i
             )
     update_data_model=exercise_data.model_dump(exclude_unset=True)
     for key,value in update_data_model.items():
+        if key in ["name" ,"primary_muscle", "equipment", "exercise_type"] and value:
+            value=value.strip().lower()
+        elif key == "secondary_muscles" and value:
+            value=[muscle.strip().lower() for muscle in value]
         setattr(exercise,key,value)
     try:
         db.commit()
@@ -130,3 +135,34 @@ async def update_data_service(exercise_data:ExerciseUpdate,db:Session,exercise_i
         pass
 
     return exercise
+async def delete_exercise(db: Session, exercise_id: int):
+
+    exercise = db.query(Exercise).filter(
+        Exercise.id == exercise_id
+    ).first()
+
+    if not exercise:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Exercise not found"
+        )
+
+    try:
+        db.delete(exercise)
+        db.commit()
+
+    except Exception:
+        db.rollback()
+        raise
+
+    try:
+        await delete_cache_data("exercises:all:*")
+        await delete_cache(f"exercise:{exercise_id}")
+
+    except Exception as e:
+        print(f"Cache invalidation failed: {e}")
+
+    return {
+        "message": f"Exercise {exercise_id} deleted successfully"
+    }
+        

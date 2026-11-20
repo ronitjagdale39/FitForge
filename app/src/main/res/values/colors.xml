@@ -2,21 +2,21 @@
 <resources>
     <color name="nav_selected">#C6284D</color>
     <color name="nav_unselected">#858085</color>
-    <!-- Background -->
-    <color name="background">#090909</color>
-    <color name="surface">#171416</color>
+
+    <!-- New Premium Theme Colors -->
+    <color name="background">#080808</color>
+    <color name="surface">#171315</color>
     <color name="surface_light">#211B1E</color>
 
-    <!-- Red Velvet Theme -->
-    <color name="primary">#8B1538</color>
-    <color name="primary_dark">#5C0D25</color>
+    <color name="primary">#B10F3A</color> <!-- Red Velvet -->
+    <color name="primary_dark">#32121F</color> <!-- Dark Burgundy -->
     <color name="accent">#C6284D</color>
     <color name="accent_light">#E76B85</color>
 
     <!-- Text -->
     <color name="white">#FFFFFF</color>
-    <color name="text_primary">#F5F1F2</color>
-    <color name="text_secondary">#A5A0A2</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#A5A0A3</color>
 
     <!-- Utility -->
     <color name="success">#4CAF50</color>

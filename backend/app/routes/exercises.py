@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.database.session import get_db
-from app.services.exercise_service import CreateExercise, get_all_exercises, get_exercise_id, update_data_service
+from app.services.exercise_service import CreateExercise, get_all_exercises, get_exercise_id, update_data_service,delete_exercise
 from app.schemas.exercise import ExerciseCreate, ExerciseResponse, ExerciseUpdate
 
 router = APIRouter(
@@ -26,3 +26,6 @@ async def get_exercise_by_id(exercise_id: int, db: Session = Depends(get_db)):
 @router.put("/{exercise_id}", response_model=ExerciseResponse)
 async def update_data(exercise_id: int, exercise_data: ExerciseUpdate, db: Session = Depends(get_db)):
     return await update_data_service(db=db, exercise_data=exercise_data, exercise_id=exercise_id)
+@router.delete("/{exercise_id}")
+async def delete_data(exercise_id:int,db:Session=Depends(get_db)):
+    return await delete_exercise(exercise_id=exercise_id,db=db)
