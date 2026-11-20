@@ -239,25 +239,42 @@ public class WorkoutFragment extends Fragment {
     }
     
     private void setupFilterChips(View view) {
-        // Simple visual toggle for the "All" chip as demonstration
         TextView chipAll = view.findViewById(R.id.chip_all);
         TextView chipChest = view.findViewById(R.id.chip_chest);
-        
-        chipChest.setOnClickListener(v -> {
-            chipChest.setBackgroundResource(R.drawable.bg_chip_selected);
-            chipChest.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-            
-            chipAll.setBackgroundResource(R.drawable.bg_chip_unselected);
-            chipAll.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
-        });
-        
-        chipAll.setOnClickListener(v -> {
-            chipAll.setBackgroundResource(R.drawable.bg_chip_selected);
-            chipAll.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-            
-            chipChest.setBackgroundResource(R.drawable.bg_chip_unselected);
-            chipChest.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
-        });
+        TextView chipBack = view.findViewById(R.id.chip_back);
+        TextView chipShoulders = view.findViewById(R.id.chip_shoulders);
+        TextView chipArms = view.findViewById(R.id.chip_arms);
+        TextView chipLegs = view.findViewById(R.id.chip_legs);
+
+        List<TextView> chips = new ArrayList<>();
+        chips.add(chipAll);
+        chips.add(chipChest);
+        chips.add(chipBack);
+        chips.add(chipShoulders);
+        chips.add(chipArms);
+        chips.add(chipLegs);
+
+        for (TextView chip : chips) {
+            chip.setOnClickListener(v -> {
+                // Reset all chips
+                for (TextView c : chips) {
+                    c.setBackgroundResource(R.drawable.bg_chip_unselected);
+                    c.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
+                }
+
+                // Set clicked chip to active
+                chip.setBackgroundResource(R.drawable.bg_chip_selected);
+                chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                
+                // Filter the adapter based on the chip text
+                String filterText = chip.getText().toString();
+                if (filterText.equals("All")) {
+                    adapter.filter("");
+                } else {
+                    adapter.filter(filterText);
+                }
+            });
+        }
     }
     
     private void showAddExerciseDialog() {

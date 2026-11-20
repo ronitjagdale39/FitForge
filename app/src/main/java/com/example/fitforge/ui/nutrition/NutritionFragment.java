@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import com.example.fitforge.R;
 
+import android.widget.Toast;
+
 public class NutritionFragment extends Fragment {
 
     @Nullable
@@ -19,10 +21,18 @@ public class NutritionFragment extends Fragment {
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        TextView textView = new TextView(requireContext());
-        textView.setText("FitForge Nutrition");
-        textView.setTextSize(24);
-        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-        return textView;
+            
+        View view = inflater.inflate(R.layout.fragment_nutrition, container, false);
+        
+        // Setup mock listeners for water tracking
+        view.findViewById(R.id.btn_water_plus).setOnClickListener(v -> 
+            Toast.makeText(getContext(), "Added 0.5L of Water", Toast.LENGTH_SHORT).show()
+        );
+        
+        view.findViewById(R.id.btn_water_minus).setOnClickListener(v -> 
+            Toast.makeText(getContext(), "Removed 0.5L of Water", Toast.LENGTH_SHORT).show()
+        );
+        
+        return view;
     }
 }
