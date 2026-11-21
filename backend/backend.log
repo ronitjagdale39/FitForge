@@ -210,3 +210,37 @@ WHERE exercises.id = %(id_1)s::INTEGER AND exercises.is_active = true
 2026-11-20 22:02:31,059 INFO sqlalchemy.engine.Engine [cached since 3800s ago] {'id_1': 11, 'param_1': 1}
 INFO:     127.0.0.1:62903 - "GET /exercises/11 HTTP/1.1" 200 OK
 2026-11-20 22:02:31,065 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-11-21 09:08:31,521 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-11-21 09:08:31,537 INFO sqlalchemy.engine.Engine SELECT users.id, users.name, users.email, users.password_hash, users.is_active, users.created_at 
+FROM users 
+WHERE users.email = %(email_1)s::VARCHAR
+2026-11-21 09:08:31,538 INFO sqlalchemy.engine.Engine [cached since 9878s ago] {'email_1': 'ronit24it@gmail.com'}
+2026-11-21 09:08:31,723 INFO sqlalchemy.engine.Engine INSERT INTO refresh_tokens (user_id, token_hash, expires_at, revoked_at, replaced_by_token_id) VALUES (%(user_id)s::INTEGER, %(token_hash)s::VARCHAR, %(expires_at)s::TIMESTAMP WITH TIME ZONE, %(revoked_at)s::TIMESTAMP WITH TIME ZONE, %(replaced_by_token_id)s::INTEGER) RETURNING refresh_tokens.id, refresh_tokens.created_at
+2026-11-21 09:08:31,724 INFO sqlalchemy.engine.Engine [cached since 9878s ago] {'user_id': 3, 'token_hash': '48d54750a03a4b7f4120f13390ef569207ab0427aec402992f884c7db56372b9', 'expires_at': datetime.datetime(2054, 6, 27, 3, 38, 31, 716099, tzinfo=datetime.timezone.utc), 'revoked_at': None, 'replaced_by_token_id': None}
+2026-11-21 09:08:31,773 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:64175 - "POST /auth/login HTTP/1.1" 200 OK
+2026-11-21 09:08:40,330 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-11-21 09:08:40,330 INFO sqlalchemy.engine.Engine SELECT exercises.id AS exercises_id, exercises.name AS exercises_name, exercises.description AS exercises_description, exercises.primary_muscle AS exercises_primary_muscle, exercises.secondary_muscles AS exercises_secondary_muscles, exercises.equipment AS exercises_equipment, exercises.exercise_type AS exercises_exercise_type, exercises.instructions AS exercises_instructions, exercises.is_active AS exercises_is_active, exercises.created_at AS exercises_created_at 
+FROM exercises 
+WHERE exercises.is_active = true 
+ LIMIT %(param_1)s::INTEGER OFFSET %(param_2)s::INTEGER
+2026-11-21 09:08:40,331 INFO sqlalchemy.engine.Engine [cached since 9880s ago] {'param_1': 20, 'param_2': 0}
+INFO:     127.0.0.1:64183 - "GET /exercises/ HTTP/1.1" 200 OK
+2026-11-21 09:08:40,351 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-11-21 12:23:13,358 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-11-21 12:23:13,373 INFO sqlalchemy.engine.Engine SELECT users.id, users.name, users.email, users.password_hash, users.is_active, users.created_at 
+FROM users 
+WHERE users.email = %(email_1)s::VARCHAR
+2026-11-21 12:23:13,375 INFO sqlalchemy.engine.Engine [cached since 1.892e+04s ago] {'email_1': 'ronit24it@gmail.com'}
+2026-11-21 12:23:13,554 INFO sqlalchemy.engine.Engine INSERT INTO refresh_tokens (user_id, token_hash, expires_at, revoked_at, replaced_by_token_id) VALUES (%(user_id)s::INTEGER, %(token_hash)s::VARCHAR, %(expires_at)s::TIMESTAMP WITH TIME ZONE, %(revoked_at)s::TIMESTAMP WITH TIME ZONE, %(replaced_by_token_id)s::INTEGER) RETURNING refresh_tokens.id, refresh_tokens.created_at
+2026-11-21 12:23:13,554 INFO sqlalchemy.engine.Engine [cached since 1.892e+04s ago] {'user_id': 3, 'token_hash': 'e7d7102ca5977cfa9d4618d1739443047fb9b885bed60b2430097440da1debe7', 'expires_at': datetime.datetime(2054, 6, 27, 6, 53, 13, 542916, tzinfo=datetime.timezone.utc), 'revoked_at': None, 'replaced_by_token_id': None}
+2026-11-21 12:23:13,569 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:55920 - "POST /auth/login HTTP/1.1" 200 OK
+2026-11-21 12:23:45,452 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-11-21 12:23:45,454 INFO sqlalchemy.engine.Engine SELECT exercises.id AS exercises_id, exercises.name AS exercises_name, exercises.description AS exercises_description, exercises.primary_muscle AS exercises_primary_muscle, exercises.secondary_muscles AS exercises_secondary_muscles, exercises.equipment AS exercises_equipment, exercises.exercise_type AS exercises_exercise_type, exercises.instructions AS exercises_instructions, exercises.is_active AS exercises_is_active, exercises.created_at AS exercises_created_at 
+FROM exercises 
+WHERE exercises.is_active = true 
+ LIMIT %(param_1)s::INTEGER OFFSET %(param_2)s::INTEGER
+2026-11-21 12:23:45,454 INFO sqlalchemy.engine.Engine [cached since 1.895e+04s ago] {'param_1': 20, 'param_2': 0}
+INFO:     127.0.0.1:55951 - "GET /exercises/ HTTP/1.1" 200 OK
+2026-11-21 12:23:45,482 INFO sqlalchemy.engine.Engine ROLLBACK

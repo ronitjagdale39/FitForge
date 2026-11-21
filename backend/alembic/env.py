@@ -16,7 +16,7 @@ from app.models.workout_exercise import WorkoutExercise
 from app.models.workout_session import WorkoutSession
 from app.models.exercise_set import ExerciseSet
 from app.models.register import RefreshToken
-
+from app.models.food import Food
 # Alembic configuration
 config = context.config
 

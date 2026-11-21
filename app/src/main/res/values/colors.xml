@@ -4,12 +4,12 @@
     <color name="nav_unselected">#858085</color>
 
     <!-- New Premium Theme Colors -->
-    <color name="background">#080808</color>
-    <color name="surface">#171315</color>
+    <color name="background">#0B0B0D</color>
+    <color name="surface">#171719</color>
     <color name="surface_light">#211B1E</color>
 
-    <color name="primary">#B10F3A</color> <!-- Red Velvet -->
-    <color name="primary_dark">#32121F</color> <!-- Dark Burgundy -->
+    <color name="primary">#B51F35</color> <!-- Red Velvet -->
+    <color name="primary_dark">#7A1728</color> <!-- Muted Red / Dark Burgundy -->
     <color name="accent">#C6284D</color>
     <color name="accent_light">#E76B85</color>
 

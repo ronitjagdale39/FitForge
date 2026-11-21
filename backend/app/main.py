@@ -4,9 +4,10 @@ from app.routes.exercises import router as exercises_router
 from app.database.session import engine, Base
 from app.models import user,register,workout,exercise,workout_session,workout,workout_exercise,exercise_set # ensure models are imported to register with Base
 from app.routes.redis_ping import router_redis
+from app.scripts.seed_food import seed_foods
+from app.routes.nutrition import router_nutri
 
 # Create tables if they don't exist
-Base.metadata.create_all(bind=engine)
 
 
 
@@ -15,14 +16,16 @@ app = FastAPI(
     description="AI-powered Personal Fitness Platform",
     version="1.0.0"
 )
-
+app.include_router(router_nutri)
 app.include_router(auth_router)
 app.include_router(exercises_router)
 app.include_router(router_redis)
 # API Version 1
 api_router = APIRouter(prefix="/api/v1")
 
-
+@app.on_event("startup")
+def startup():
+    seed_foods()
 @api_router.get("/")
 def root():
 
