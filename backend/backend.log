@@ -244,3 +244,7 @@ WHERE exercises.is_active = true
 2026-11-21 12:23:45,454 INFO sqlalchemy.engine.Engine [cached since 1.895e+04s ago] {'param_1': 20, 'param_2': 0}
 INFO:     127.0.0.1:55951 - "GET /exercises/ HTTP/1.1" 200 OK
 2026-11-21 12:23:45,482 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [36284]
