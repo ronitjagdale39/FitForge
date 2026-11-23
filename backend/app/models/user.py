@@ -3,7 +3,8 @@ from sqlalchemy import (
     Integer,
     String,
     Boolean,
-    DateTime
+    DateTime,
+    text
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -34,6 +35,12 @@ class User(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False
+    )
+    is_verified = Column(
+            Boolean,
+            nullable=False,
+            default=False,
+            server_default=text('false')
     )
     refresh_tokens = relationship(
         "RefreshToken",
