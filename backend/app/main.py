@@ -6,7 +6,7 @@ from app.models import user,register,workout,exercise,workout_session,workout,wo
 from app.routes.redis_ping import router_redis
 from app.scripts.seed_food import seed_foods
 from app.routes.nutrition import router_nutri
-
+from app.routes.otp import otp_route
 # Create tables if they don't exist
 
 
@@ -16,6 +16,7 @@ app = FastAPI(
     description="AI-powered Personal Fitness Platform",
     version="1.0.0"
 )
+app.include_router(otp_route)
 app.include_router(router_nutri)
 app.include_router(auth_router)
 app.include_router(exercises_router)

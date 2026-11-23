@@ -33,6 +33,13 @@ def login_user(
             detail="Invalid email or password"
         )
 
+    # Check if user is verified
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Email not verified. Please verify your email first."
+        )
+
     # 2. Verify password
 
     if not verify_password(password, user.password_hash):

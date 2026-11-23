@@ -17,6 +17,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.example.fitforge.data.remote.dto.auth.OtpRequest;
+import com.example.fitforge.data.remote.dto.auth.OtpResponse;
+import com.example.fitforge.data.remote.dto.auth.OtpVerifyRequest;
+import android.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+
 public class RegisterActivity extends AppCompatActivity {
 
     EditText etName, etEmail, etPassword;
@@ -25,7 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
     Button btnRegister;
     TextView tvLogin;
     
-    private AuthApi authApi; // <-- Retrofit API instance
+    private AuthApi authApi;
+    private String registeredEmail = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +100,12 @@ public class RegisterActivity extends AppCompatActivity {
         authApi.register(request).enqueue(new Callback<RegisterResponse>() {
             @Override
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
-                btnRegister.setEnabled(true);
-                btnRegister.setText("REGISTER");
-                
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-                    // Successfully registered! Let's go to Login
-                    finish(); 
+                    registeredEmail = email; // Save for OTP verification
+                    sendOtp(); // Trigger OTP instead of finishing
                 } else {
+                    btnRegister.setEnabled(true);
+                    btnRegister.setText("CREATE ACCOUNT");
                     Toast.makeText(RegisterActivity.this, "Registration Failed: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -107,7 +113,84 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<RegisterResponse> call, Throwable t) {
                 btnRegister.setEnabled(true);
-                btnRegister.setText("REGISTER");
+                btnRegister.setText("CREATE ACCOUNT");
+                Toast.makeText(RegisterActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void sendOtp() {
+        OtpRequest request = new OtpRequest(registeredEmail);
+        authApi.sendOtp(request).enqueue(new Callback<OtpResponse>() {
+            @Override
+            public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
+                btnRegister.setEnabled(true);
+                btnRegister.setText("CREATE ACCOUNT");
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    String otp = response.body().getOtp();
+                    // Temporary toast since no actual email is sent
+                    Toast.makeText(RegisterActivity.this, "OTP Sent! Check your email. Code: " + otp, Toast.LENGTH_LONG).show();
+                    showOtpDialog();
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OtpResponse> call, Throwable t) {
+                btnRegister.setEnabled(true);
+                btnRegister.setText("CREATE ACCOUNT");
+                Toast.makeText(RegisterActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showOtpDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_otp_verification, null);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        
+        AlertDialog dialog = builder.create();
+        
+        android.widget.EditText etOtpCode = dialogView.findViewById(R.id.etOtpCode);
+        android.widget.Button btnVerifyOtp = dialogView.findViewById(R.id.btnVerifyOtp);
+        android.widget.Button btnCancelOtp = dialogView.findViewById(R.id.btnCancelOtp);
+        
+        btnCancelOtp.setOnClickListener(v -> {
+            dialog.dismiss();
+            Toast.makeText(this, "Verification Cancelled", Toast.LENGTH_SHORT).show();
+        });
+        
+        btnVerifyOtp.setOnClickListener(v -> {
+            String otpCode = etOtpCode.getText().toString().trim();
+            if (otpCode.length() != 6) {
+                etOtpCode.setError("Enter 6-digit OTP");
+                return;
+            }
+            verifyOtp(otpCode, dialog);
+        });
+        
+        dialog.show();
+    }
+
+    private void verifyOtp(String otpCode, AlertDialog dialog) {
+        OtpVerifyRequest request = new OtpVerifyRequest(registeredEmail, otpCode);
+        authApi.verifyOtp(request).enqueue(new Callback<OtpResponse>() {
+            @Override
+            public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterActivity.this, "Email Verified Successfully!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    finish(); // Return to Login
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OtpResponse> call, Throwable t) {
                 Toast.makeText(RegisterActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

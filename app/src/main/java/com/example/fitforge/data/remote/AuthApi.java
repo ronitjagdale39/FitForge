@@ -15,4 +15,9 @@ public interface AuthApi {
     @POST("auth/login")
     Call<RegisterResponse> login(@Body com.example.fitforge.data.remote.dto.LoginRequest request);
 
+    @POST("auth/send-otp")
+    Call<com.example.fitforge.data.remote.dto.auth.OtpResponse> sendOtp(@Body com.example.fitforge.data.remote.dto.auth.OtpRequest request);
+
+    @POST("auth/verify-otp")
+    Call<com.example.fitforge.data.remote.dto.auth.OtpResponse> verifyOtp(@Body com.example.fitforge.data.remote.dto.auth.OtpVerifyRequest request);
 }
