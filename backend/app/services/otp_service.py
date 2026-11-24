@@ -1,11 +1,12 @@
 import secrets
+from fastapi import APIRouter, BackgroundTasks, Depends
+from app.services.email_service import send_otp_email
+from app.core.config import settings
 from sqlalchemy.orm import Session
 from app.models.user import User
-from fastapi import HTTPException, status,Depends
+from fastapi import HTTPException, status
 from app.services.cache_service import set_cache, get_cache, delete_cache
 from app.schemas.otp import OTPRequest,OTPVerify
-OTP_EXPIRY = 300
-
 
 def generate_otp() -> str:
     return f"{secrets.randbelow(1000000):06d}"
@@ -14,7 +15,7 @@ def generate_otp() -> str:
 async def save_otp(email: str) -> str:
     otp = generate_otp()
     key = f"otp:{email.lower()}"
-    await set_cache(key, otp, OTP_EXPIRY)
+    await set_cache(key, otp, settings.OTP_EXPIRY)
     return otp
 
 
@@ -36,7 +37,7 @@ async def verify_otp(email: str, otp: str) -> bool:
 
     await delete_cache(key)
     return True
-async def send_otp(db:Session,data:OTPRequest):
+async def send_otp(db:Session,data:OTPRequest,background_task:BackgroundTasks):
     user=db.query(User).filter(User.email==data.email.lower()).first()
     if not user:
             raise HTTPException(
@@ -47,9 +48,9 @@ async def send_otp(db:Session,data:OTPRequest):
     if user.is_verified:
             return {"message": "Email is already verified"}
     otp=await save_otp(data.email)
+    background_task.add_task(send_otp_email, data.email, otp)
     return {
-        "message":"otp send successfully",
-        "otp":otp
+        "message": "OTP sent successfully. Please check your email."
     }
 async def verify_user_otp(data: OTPVerify, db: Session ):
     user = db.query(User).filter(User.email == data.email.lower()).first()
