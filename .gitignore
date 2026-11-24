@@ -1,5 +1,5 @@
 *.iml
-backend/env
+backend/.env
 .gradle
 /local.properties
 /.idea/caches
