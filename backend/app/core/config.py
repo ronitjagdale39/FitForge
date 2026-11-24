@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     REFRESH_TOKEN_EXPIRE_MINUTES: int
     REDIS_URL:str
+    OTP_EXPIRY :int
+    SMTP_HOST:str
+    SMTP_PORT:int
+    SMTP_USER:str
+    SMTP_PASSWORD:str
 
     model_config = SettingsConfigDict(
         env_file=env_path,

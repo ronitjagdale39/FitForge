@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends,BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
@@ -9,8 +9,8 @@ otp_route = APIRouter(prefix="/otp", tags=["otp"])
 
 
 @otp_route.post("/send_otp")
-async def send_otp_route(data: OTPRequest, db: Session = Depends(get_db)):
-    return await send_otp(db=db, data=data)
+async def send_otp_route(data: OTPRequest,background_task:BackgroundTasks, db: Session = Depends(get_db)):
+    return await send_otp(db=db, data=data,background_task=background_task)
 
 
 @otp_route.post("/verify_otp")

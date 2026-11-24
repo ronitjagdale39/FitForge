@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
@@ -38,8 +38,8 @@ def Login(data: LoginRequest, db: Session = Depends(get_db)):
     return login_user(db=db, email=data.email, password=data.password)
 
 @router.post('/send-otp')
-async def send_otp_endpoint(data: OTPRequest, db: Session = Depends(get_db)):
-    return await send_otp(db=db, data=data)
+async def send_otp_endpoint(data: OTPRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    return await send_otp(db=db, data=data, background_task=background_tasks)
 
 @router.post('/verify-otp')
 async def verify_otp_endpoint(data: OTPVerify, db: Session = Depends(get_db)):
