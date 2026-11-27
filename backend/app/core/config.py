@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     SMTP_PORT:int
     SMTP_USER:str
     SMTP_PASSWORD:str
+    GEMINI_API_KEY:str
 
     model_config = SettingsConfigDict(
         env_file=env_path,

@@ -17,6 +17,7 @@ from app.models.workout_session import WorkoutSession
 from app.models.exercise_set import ExerciseSet
 from app.models.register import RefreshToken
 from app.models.food import Food
+from app.models.ai_coach import ChatMessage, FoodLog
 # Alembic configuration
 config = context.config
 
